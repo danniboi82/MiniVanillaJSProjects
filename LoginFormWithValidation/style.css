@@ -57,12 +57,29 @@ h2 {
     font-size: 14px;
 }
 
+.form-control input:focus {
+    outline: 0;
+    border-color: #777;
+}
+
+.form-control.success input {
+    border-color: var(--success-color);
+}
+
+.form-control.error input {
+    border-color: var(--fail-color);
+}
+
 .form-control small {
     color: var(--fail-color);
     position: absolute;
     bottom: 0;
     left: 0;
     visibility: hidden;
+}
+
+.form-control.error small {
+    visibility: visible;
 }
 
 .form button {
