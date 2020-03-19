@@ -8,7 +8,11 @@ let passConfirm = document.querySelector('#passwordConfirm');
 //Email Validation
 function validEmail(input) {
     let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regex.test(String(input).toLowerCase());
+    if (regex.test(String(input.value.trim()).toLowerCase())) {
+        showSuccess(input);
+    } else {
+        showError(input, 'Not a valid email');
+    }
 
 }
 
@@ -41,11 +45,31 @@ function checkRequired(inputArr) {
     })
 }
 
-function firstCharCap (input) {
-    if(input.id === "passwordConfirm") {
+function firstCharCap(input) {
+    if (input.id === "passwordConfirm") {
         return `${input.id.charAt(0).toUpperCase() + input.id.slice(1,8)} ${input.id.slice(8)}`;
     }
     return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+}
+
+function checkLength(input, min, max) {
+    console.log(input.id);
+    if (input.value.length < min) {
+        showError(input, `${firstCharCap(input)} minimum ${min} characters`);
+    } else if (input.value.length > max) {
+        showError(input, `${firstCharCap(input)} maximum ${max} characters`)
+    } else {
+        showSuccess(input);
+    }
+}
+
+
+function checkPass(input, input1) {
+    if (input.value !== input1.value) {
+        showError(input1, `Make sure passwords match`);
+    } else {
+        showSuccess(input);
+    }
 }
 
 //eventListeners
@@ -65,4 +89,8 @@ form.addEventListener('submit', (e) => {
     //     showSuccess(email);
     // }
     checkRequired([userName, email, password, passConfirm]);
+    checkLength(userName, 3, 50);
+    checkLength(password, 8, 50);
+    validEmail(email);
+    checkPass(password, passConfirm);
 });
