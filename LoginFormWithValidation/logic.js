@@ -1,96 +1,65 @@
-let form = document.querySelector('#form');
-let userName = document.querySelector('#username');
-let email = document.querySelector('#email');
-let password = document.querySelector('#password');
-let passConfirm = document.querySelector('#passwordConfirm');
+let form = document.getElementById('form');
+let username = document.getElementById('username');
+let password = document.getElementById('password');
+let passConfirm = document.getElementById('passwordConfirm');
+let email = document.getElementById('email');
 
-
-//Email Validation
-function validEmail(input) {
-    let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (regex.test(String(input.value.trim()).toLowerCase())) {
-        showSuccess(input);
-    } else {
-        showError(input, 'Not a valid email');
-    }
-
-}
-
-//Show input error message
 function showError(input, msg) {
-    //input here referring to value/text inputted per different selector
-    //If input was in username then username.parentelement would be the case
-    //it would point to PARENT element of where ever the input element was entered 
-    const formCtrl = input.parentElement;
-    formCtrl.className = 'form-control error';
-    const small = formCtrl.querySelector('small');
+    let formCtrl = input.parentElement;
+    formCtrl.className = `form-control error`;
+    let small = formCtrl.querySelector('small');
     small.innerText = msg;
 }
 
 function showSuccess(input) {
-    const formCtrl = input.parentElement;
-    formCtrl.className = 'form-control success';
+    let formCtrl = input.parentElement;
+    formCtrl.className = `form-control success`;
 }
 
-//Check required inputs
-function checkRequired(inputArr) {
+function validInput(inputArr) {
     inputArr.forEach(input => {
-        console.log(input.id);
-        if (!input.value.trim()) {
-            showError(input, `${firstCharCap(input)} is required`);
+        if (!input.value) {
+            showError(input, `${input.id[0].toUpperCase() + input.id.slice(1)} is required`);
         } else {
             showSuccess(input);
         }
-        // if(input.id === username)
     })
 }
 
-function firstCharCap(input) {
-    if (input.id === "passwordConfirm") {
-        return `${input.id.charAt(0).toUpperCase() + input.id.slice(1,8)} ${input.id.slice(8)}`;
-    }
-    return input.id.charAt(0).toUpperCase() + input.id.slice(1);
-}
-
-function checkLength(input, min, max) {
-    console.log(input.id);
+function inputLength(input, min, max) {
     if (input.value.length < min) {
-        showError(input, `${firstCharCap(input)} minimum ${min} characters`);
+        showError(input, `${input.id} is at least ${min} length`);
     } else if (input.value.length > max) {
-        showError(input, `${firstCharCap(input)} maximum ${max} characters`)
+        showError(input, `${input.id} is at most ${max} length`);
     } else {
         showSuccess(input);
     }
 }
 
+function validEmail(input) {
+    let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regex.test(input.value)) {
+        showError(input, `Please enter valid email`);
+    } else {
+        showSuccess(input);
+    }
+}
 
-function checkPass(input, input1) {
+function checkPasswordsMatch(input, input1) {
     if (input.value !== input1.value) {
-        showError(input1, `Make sure passwords match`);
-    } else {
-        showSuccess(input);
+        showError(input1, `Passwords do not match!`);
     }
 }
 
-//eventListeners
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    // if (!userName.value) {
-    //     showError(userName, "ENTER A FUCKING USERNAME!")
-    // } else {
-    //     showSuccess(userName);
-    // }
-
-    // if (!email.value) {
-    //     showError(email, "Email is required");
-    // } else if (!validEmail(email)) {
-    //     showError(email, "Enter valid e-mail");
-    // } else {
-    //     showSuccess(email);
-    // }
-    checkRequired([userName, email, password, passConfirm]);
-    checkLength(userName, 3, 50);
-    checkLength(password, 8, 50);
+    validInput([username, email, password, passConfirm]);
+    inputLength(username, 3, 25);
+    inputLength(password, 8, 25);
+    checkPasswordsMatch(password, passConfirm);
     validEmail(email);
-    checkPass(password, passConfirm);
-});
+})
+//check/validate inputs 
+//check length of password and username 
+//email validation function
+//check if passwords match
